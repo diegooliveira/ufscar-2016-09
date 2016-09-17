@@ -1,9 +1,5 @@
 package ufscar.uol.app.usuario;
 
-import ufscar.uol.app.DisparadorEmail;
-import ufscar.uol.app.ServicoBrindes;
-import ufscar.uol.app.ServicoMilhagens;
-
 /**
  * Implementação da rotina padrão de criação de usuários. Essa classe é uma
  * coordenadora.
@@ -11,29 +7,22 @@ import ufscar.uol.app.ServicoMilhagens;
 public class CriadorUsuariosPadrao implements CriadorUsuarios {
 
 	private BancoDadosUsuarios bancoDadosUsuarios;
-	private ServicoMilhagens servicoMilhagens;
-	private ServicoBrindes servicoBrindes;
-	private DisparadorEmail disparadorEmail;
+	private EtapaConclusaoCriacaoUsuario etapaConclusaoCriacaoUsuario;
 
-	public CriadorUsuariosPadrao(BancoDadosUsuarios bancoDadosUsuarios, ServicoMilhagens servicoMilhagens,
-			ServicoBrindes servicoBrindes, DisparadorEmail disparadorEmail) {
+	public CriadorUsuariosPadrao(BancoDadosUsuarios bancoDadosUsuarios,
+			EtapaConclusaoCriacaoUsuario etapaConclusaoCriacaoUsuario) {
+
 		this.bancoDadosUsuarios = bancoDadosUsuarios;
-		
-		this.servicoMilhagens = servicoMilhagens;
-		this.servicoBrindes = servicoBrindes;
-		this.disparadorEmail = disparadorEmail;
+		this.etapaConclusaoCriacaoUsuario = etapaConclusaoCriacaoUsuario;
 	}
 
 	@Override
 	public void criar(DadosCriacaoUsuario dadosCriacaoUsuario) {
-		
+
 		// Salvando os dados
 		Usuario usuario = bancoDadosUsuarios.cadastrar(dadosCriacaoUsuario);
 
 		// Executando as rotinas de termino do cadastro do usuário.
-		servicoMilhagens.criarContas(usuario);
-		disparadorEmail.enviar(new EmailBoaVindas(usuario));
-		servicoBrindes.enviarBrinde(usuario);
+		etapaConclusaoCriacaoUsuario.continuaProcessoCriacao(usuario);
 	}
-
 }

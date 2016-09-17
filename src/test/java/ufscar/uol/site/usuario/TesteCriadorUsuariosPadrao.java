@@ -5,13 +5,10 @@ import static org.hamcrest.MatcherAssert.assertThat;
 
 import org.junit.Test;
 
-import ufscar.uol.app.DisparadorEmail;
-import ufscar.uol.app.Email;
-import ufscar.uol.app.ServicoBrindes;
-import ufscar.uol.app.ServicoMilhagens;
 import ufscar.uol.app.usuario.BancoDadosUsuarios;
 import ufscar.uol.app.usuario.CriadorUsuariosPadrao;
 import ufscar.uol.app.usuario.DadosCriacaoUsuario;
+import ufscar.uol.app.usuario.EtapaConclusaoCriacaoUsuario;
 import ufscar.uol.app.usuario.Usuario;
 
 public class TesteCriadorUsuariosPadrao {
@@ -25,20 +22,15 @@ public class TesteCriadorUsuariosPadrao {
 		DadosCriacaoUsuario dados = new DadosParaTeste();
 
 		BancoDadosUsuarioTeste bancoDadosUsuarioTeste = new BancoDadosUsuarioTeste();
-		ServicoMilhagensTeste servicoMilhagensTeste = new ServicoMilhagensTeste();
-		ServicoBrindesTeste servicoBrindesTeste = new ServicoBrindesTeste();
-		DisparadorEmailsTeste disparadorEmailTeste = new DisparadorEmailsTeste();
+		EtapaTeste etapaTeste = new EtapaTeste();
 
 		// Executando o teste
-		CriadorUsuariosPadrao criadorUsuarioPadrao = new CriadorUsuariosPadrao(bancoDadosUsuarioTeste,
-				servicoMilhagensTeste, servicoBrindesTeste, disparadorEmailTeste);
+		CriadorUsuariosPadrao criadorUsuarioPadrao = new CriadorUsuariosPadrao(bancoDadosUsuarioTeste, etapaTeste);
 		criadorUsuarioPadrao.criar(dados);
 
 		// Validação
 		assertThat(bancoDadosUsuarioTeste.quantidadeChamadas, equalTo(1));
-		assertThat(servicoMilhagensTeste.quantidadeChamadas, equalTo(1));
-		assertThat(servicoBrindesTeste.quantidadeChamadas, equalTo(1));
-		assertThat(disparadorEmailTeste.quantidadeChamadas, equalTo(1));
+		assertThat(etapaTeste.quantidadeChamadas, equalTo(1));
 	}
 
 	/******************************************************************************
@@ -51,12 +43,12 @@ public class TesteCriadorUsuariosPadrao {
 
 	}
 
-	private static class ServicoMilhagensTeste implements ServicoMilhagens {
+	private static class EtapaTeste implements EtapaConclusaoCriacaoUsuario {
 
 		private int quantidadeChamadas;
 
 		@Override
-		public void criarContas(Usuario usuario) {
+		public void continuaProcessoCriacao(Usuario usuario) {
 			quantidadeChamadas++;
 		}
 
@@ -73,26 +65,4 @@ public class TesteCriadorUsuariosPadrao {
 		}
 
 	}
-
-	private class ServicoBrindesTeste implements ServicoBrindes {
-
-		private int quantidadeChamadas;
-
-		@Override
-		public void enviarBrinde(Usuario usuario) {
-			quantidadeChamadas++;
-		}
-	}
-
-	private static class DisparadorEmailsTeste implements DisparadorEmail {
-
-		private int quantidadeChamadas;
-
-		@Override
-		public void enviar(Email email) {
-			quantidadeChamadas++;
-		}
-
-	}
-
 }
